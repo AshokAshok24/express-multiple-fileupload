@@ -1,43 +1,23 @@
 const express = require('express');
 const app = express();
-
+const fs = require('fs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
+// Middleware Functions For Image Uploading
+
 const uploadbySingle = require('./imageuploadmiddleware/uploadbySingle');
 const uploadAndRename = require('./imageuploadmiddleware/uploadAndRename');
-const uploadMiddleware = require('./imageuploadmiddleware/uploadmiddleware');
-const fs = require('fs');
-const uploadbyseperate = require('./imageuploadmiddleware/multipleUploadbySeperate');
+const uploadBySeperate = require('./imageuploadmiddleware/multipleUploadbySeperate');
+const uploadbyArray = require('./imageuploadmiddleware/multipleUploadbyArray')
 
+app.get('/', (req, res) => {
 
-app.post('/upload', uploadMiddleware, (req, res) => {
-
-    const files = req.files;
-
-    files.forEach((file) => {
-        const filePath = `uploads/${file.filename}`;
-        fs.rename(file.path, filePath, (err) => {
-            if (err) {
-
-                return res.status(500).json({ error: 'Failed to store the file' });
-            }
-        });
-
-        const extName = file.originalname.split(".")[1];
-        const randomNum = Math.floor(Math.random() * 100000000);
-        const newFileName = `${'A'}_${randomNum}.${extName}`;
-        convertedFilePath = `uploads/${newFileName}`;
-
-        // Rename the File Name
-        fs.rename(file.path, convertedFilePath, (err) => {
-            if (err) { console.log("error in File Rename", err.message); }
-        })
-    });
-
-    return res.status(200).json({ message: 'File upload successful' });
-});
-
+    const msg = `<h2>Now You are Connected With the Server...</h2>`
+    res.send(msg)
+})
 
 app.post('/singleupload', uploadbySingle, (req, res) => {
 
@@ -47,7 +27,7 @@ app.post('/singleupload', uploadbySingle, (req, res) => {
 
         // Name For image
         var name = 'img'
-        var directoryPath = `public/users/single/`;
+        var directoryPath = `public/users/single`;
         var convertedFilePath = uploadAndRename(req.file, name, directoryPath);
 
     } else {
@@ -58,8 +38,34 @@ app.post('/singleupload', uploadbySingle, (req, res) => {
     return res.status(200).json({ message: 'File upload successful' });
 })
 
+app.post('/multipleuploadbyarray', uploadbyArray, (req, res) => {
 
-app.post('/multipleuploadbysepeate', uploadbyseperate, (req, res) => {
+    var files = req.files
+    // if (req.files) {
+    //     // console.log("--", req.files);
+
+    //     var name = 'img'
+    //     var directoryPath = `public/users/array`;
+
+    //     var imagepaths = uploadAndRename(files, name, directoryPath);
+
+    //     console.log(`Image saved in the path : ${imagepaths}`);
+
+    //     return res.status(200).json({ message: 'File upload successful' });
+    // }
+    if (files) {
+
+        var name = ['img1', 'img2', 'img3', 'img4']
+        var directoryPath = `public/users/array`;
+
+        files.forEach((file, index) => {
+            uploadAndRename(file, name[index], directoryPath)
+        })
+    }
+    return res.status(200).json({ message: 'File upload successful' });
+})
+
+app.post('/multipleuploadbysepeate', uploadBySeperate, (req, res) => {
 
 
     // For Uploading Image
@@ -68,7 +74,7 @@ app.post('/multipleuploadbysepeate', uploadbyseperate, (req, res) => {
 
     if (files) {
 
-        var directoryPath = `public/users/multiple/`;
+        var directoryPath = `public/users/multiple`;
 
 
         // Fields is about name for uploading Image and video
@@ -90,9 +96,6 @@ app.post('/multipleuploadbysepeate', uploadbyseperate, (req, res) => {
         console.log("File object is undefined or null.");
 
     }
-
-
-
 
     return res.status(200).json({ message: 'File upload successful' });
 })

@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const uploadAndRename = (file, prefix, directoryPath) => {
 
-     
+
     if (file) {
 
         const extName = file.originalname.split(".")[1];

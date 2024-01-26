@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-const uploadbyseperate = (req, res, next) => {
+const uploadBySeperate = (req, res, next) => {
 
     const field1 = 'image1'
     const field2 = 'image2'
@@ -103,4 +103,4 @@ const getFieldName = (index) => {
     }
 }
 
-module.exports = uploadbyseperate;
+module.exports = uploadBySeperate;
