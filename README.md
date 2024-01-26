@@ -13,8 +13,8 @@ File size cannot be Morethan 5 MB
 By using postman name for schema to upload image 
 
 
-// For Single image upload  'image'
+For Single image upload  'image'
 
-// For Multiple image and video by Seperate  'image1', 'image2', 'image3', 'image4', 'video'
+For Multiple image and video by Seperate  'image1', 'image2', 'image3', 'image4', 'video'
 
-// For Multiple image by Array  'images'
+For Multiple image by Array  'images'
