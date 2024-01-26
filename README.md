@@ -1,6 +1,9 @@
 # express-multiple-fileupload
 This Repository about Multiple Fileupload by express and multer
 
+This app Running in the server http://localhost:3000
+
+click the url http://localhost:3000 in web browser to get details
 
 In this app we can implemented Image upload
 
