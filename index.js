@@ -15,7 +15,17 @@ const uploadbyArray = require('./imageuploadmiddleware/multipleUploadbyArray')
 
 app.get('/', (req, res) => {
 
-    const msg = `<h2>Now You are Connected With the Server...</h2>`
+    const msg =
+        `
+    <h2>Now You are Connected With the Server...</h2>
+    <p>Find the Below API [POST]</p>
+    <ul>
+        <li>singleupload</li>
+        <li>multipleuploadbyarray</li>
+        <li>multipleuploadbysepeate</li>
+    </ul>    
+    `
+
     res.send(msg)
 })
 
@@ -41,18 +51,7 @@ app.post('/singleupload', uploadbySingle, (req, res) => {
 app.post('/multipleuploadbyarray', uploadbyArray, (req, res) => {
 
     var files = req.files
-    // if (req.files) {
-    //     // console.log("--", req.files);
 
-    //     var name = 'img'
-    //     var directoryPath = `public/users/array`;
-
-    //     var imagepaths = uploadAndRename(files, name, directoryPath);
-
-    //     console.log(`Image saved in the path : ${imagepaths}`);
-
-    //     return res.status(200).json({ message: 'File upload successful' });
-    // }
     if (files) {
 
         var name = ['img1', 'img2', 'img3', 'img4']
