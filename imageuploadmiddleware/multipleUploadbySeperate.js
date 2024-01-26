@@ -45,7 +45,7 @@ const uploadBySeperate = (req, res, next) => {
         [files1, files2, files3, files4, files5].forEach((files, index) => {
 
             const allowedTypes = ['image/jpeg', 'image/png', 'video/mp4'];
-            const maxSize = 10 * 1024 * 1024  // 5MB
+            const maxSize = 10 * 1024 * 1024  // 10MB
 
             if (!files || files.length === 0) {
                 errors.push(`No file provided for ${getFieldName(index)}`);
