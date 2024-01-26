@@ -4,9 +4,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const uploadMiddleware = require('./uploadmiddleware/uploadmiddleware');
+const uploadbySingle = require('./imageuploadmiddleware/uploadbySingle');
+const uploadAndRename = require('./imageuploadmiddleware/uploadAndRename');
+const uploadMiddleware = require('./imageuploadmiddleware/uploadmiddleware');
+const fs = require('fs');
+const uploadbyseperate = require('./imageuploadmiddleware/multipleUploadbySeperate');
 
-const fs = require('fs')
 
 app.post('/upload', uploadMiddleware, (req, res) => {
 
@@ -34,6 +37,65 @@ app.post('/upload', uploadMiddleware, (req, res) => {
 
     return res.status(200).json({ message: 'File upload successful' });
 });
+
+
+app.post('/singleupload', uploadbySingle, (req, res) => {
+
+
+    // For Uploading Image 
+    if (req.file) {
+
+        // Name For image
+        var name = 'img'
+        var directoryPath = `public/users/single/`;
+        var convertedFilePath = uploadAndRename(req.file, name, directoryPath);
+
+    } else {
+        var convertedFilePath = ''
+    }
+    console.log(`Image saved in the path : ${convertedFilePath}`);
+
+    return res.status(200).json({ message: 'File upload successful' });
+})
+
+
+app.post('/multipleuploadbysepeate', uploadbyseperate, (req, res) => {
+
+
+    // For Uploading Image
+    const files = req.files;
+
+
+    if (files) {
+
+        var directoryPath = `public/users/multiple/`;
+
+
+        // Fields is about name for uploading Image and video
+
+        const fields = ['image1', 'image2', 'image3', 'image4', 'video'];
+
+        // Names is about Name for Image and video
+        const names = ['img1', 'img2', 'img3', 'img4', 'vid'];
+
+        // Process files for each fields
+        fields.forEach((field, index) => {
+            if (files[field]) {
+                uploadAndRename(files[field], names[index], directoryPath);
+            }
+        });
+
+
+    } else {
+        console.log("File object is undefined or null.");
+
+    }
+
+
+
+
+    return res.status(200).json({ message: 'File upload successful' });
+})
 
 
 const port = 3000;
