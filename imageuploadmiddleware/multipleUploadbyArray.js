@@ -18,34 +18,38 @@ const uploadbyArray = (req, res, next) => {
             return res.status(400).json({ error: err })
         }
 
-        const files = req.files;
-        const errors = [];
+        if (req.files) {
+            const files = req.files;
+            const errors = [];
 
-        files.forEach((file) => {
+            files.forEach((file) => {
 
-            const allowedTypes = ['image/jpeg', 'image/png'];
-            const maxSize = 5 * 1024 * 1024  // 5MB;
+                const allowedTypes = ['image/jpeg', 'image/png'];
+                const maxSize = 5 * 1024 * 1024  // 5MB;
 
-            if (!allowedTypes.includes(file.mimetype)) {
-                errors.push(`Invalid file type: ${file.originalname}`)
+                if (!allowedTypes.includes(file.mimetype)) {
+                    errors.push(`Invalid file type: ${file.originalname}`)
+                }
+
+                if (file.size > maxSize) {
+                    errors.push(`File too large: ${file.originalname}`)
+                }
+            });
+
+
+            if (errors.length > 0) {
+
+                files.forEach((file) => { fs.unlinkSync(file.path) })
+
+                return res.status(400).json({ errors })
             }
 
-            if (file.size > maxSize) {
-                errors.push(`File too large: ${file.originalname}`)
-            }
-        });
+            req.files = files;
 
-
-        if (errors.length > 0) {
-
-            files.forEach((file) => { fs.unlinkSync(file.path) })
-
-            return res.status(400).json({ errors })
+            next();
+        } else {
+            req.files = files;
         }
-
-        req.files = files;
-
-        next();
     })
 }
 
