@@ -18,34 +18,38 @@ const uploadSingle = (req, res, next) => {
             return res.status(400).json({ error: err });
         }
 
-        const file = req.file;
-        const errors = [];
+        if (req.file) {
+            const file = req.file;
+            const errors = [];
 
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const maxSize = 5 * 1024 * 1024;  // 5MB;
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            const maxSize = 5 * 1024 * 1024;  // 5MB;
 
-        if (!file) {
-            errors.push('No file uploaded');
+            if (!file) {
+                errors.push('No file uploaded');
+            } else {
+                if (!allowedTypes.includes(file.mimetype)) {
+                    errors.push(`Invalid file type: ${file.originalname}`);
+                }
+
+                if (file.size > maxSize) {
+                    errors.push(`File too large: ${file.originalname}`);
+                }
+            }
+
+            if (errors.length > 0) {
+                if (file) {
+                    fs.unlinkSync(file.path);
+                }
+                return res.status(400).json({ errors });
+            }
+
+            req.file = file;
+
+            next();
         } else {
-            if (!allowedTypes.includes(file.mimetype)) {
-                errors.push(`Invalid file type: ${file.originalname}`);
-            }
-
-            if (file.size > maxSize) {
-                errors.push(`File too large: ${file.originalname}`);
-            }
+            next();
         }
-
-        if (errors.length > 0) {
-            if (file) {
-                fs.unlinkSync(file.path);
-            }
-            return res.status(400).json({ errors });
-        }
-
-        req.file = file;
-
-        next();
     });
 };
 
